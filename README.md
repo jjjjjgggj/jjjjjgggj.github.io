@@ -1,3 +1,3 @@
 # jjjjjgggj.github.io
 paper code
-if you want to train this paper, you need to upload your data to the dataset, and change the config/json
+##If you need to use this code for training, first you need to create a dataset folder and then upload your data. Then modify the specific information of the corresponding configuration file in the config folder
