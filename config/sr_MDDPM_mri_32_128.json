@@ -1,0 +1,91 @@
+{
+    "name": "sr_MDDPM",
+    "phase": "train",
+    "gpu_ids": [
+        1
+    ],
+    "path": {
+        "log": "logs",
+        "tb_logger": "tb_logger",
+        "results": "results",
+        "checkpoint": "checkpoint",
+        "resume_state": "./experiments/sr_lwtdm_240508_213110/checkpoint/I300000_E600"
+
+    },
+    "datasets": {
+        "train": {
+            "name": "NET",
+            "mode": "HR",
+            "dataroot": "./Dataset/MRI_brain_32_128",
+            "datatype": "img",
+            "l_resolution": 32,
+            "r_resolution": 128,
+            "batch_size": 1,
+            "num_workers": 4,
+            "use_shuffle": true,
+            "data_len": -1
+        },
+        "val": {
+            "name": "NET",
+            "mode": "LRHR",
+            "dataroot": "./Dataset/MRI_brain_test_32_128",
+            "datatype": "img",
+            "l_resolution": 32,
+            "r_resolution": 128,
+            "data_len": 50
+        }
+    },
+    "model": {
+        "which_model_G": "MDDPM",
+        "finetune_norm": false,
+        "enet": {
+            "in_channel": 1,
+            "out_channel": 1,
+            "inner_channel": 24,
+            "channel_multiplier": [1, 4, 16],
+            "attn_res": 2,
+            "res_blocks": 2,
+            "dropout": 0.1
+        },
+        "beta_schedule": {
+            "train": {
+                "schedule": "cosine",
+                "n_timestep": 2000,
+                "linear_start": 5e-4,
+                "linear_end": 2e-2
+            },
+            "val": {
+                "schedule": "cosine",
+                "n_timestep": 2000,
+                "linear_start": 5e-4,
+                "linear_end": 2e-2,
+                "sampling_timesteps": 2000,
+                "ddim_sampling_eta": 0.0
+            }
+        },
+        "diffusion": {
+            "image_size": 128,
+            "channels": 1,
+            "conditional": true
+        }
+
+    },
+    "train": {
+        "n_iter": 300000,
+        "val_freq": 1e4,
+        "save_checkpoint_freq": 1e4,
+        "print_freq": 200,
+        "optimizer": {
+            "type": "adam",
+            "lr": 5e-5
+        },
+        "ema_scheduler": {
+            "step_start_ema": 5000,
+            "update_ema_every": 1,
+            "ema_decay": 0.9999
+        }
+    },
+    "wandb": {
+        "project": "sr_MDDPM"
+    }
+}
